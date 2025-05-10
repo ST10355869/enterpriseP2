@@ -1,5 +1,7 @@
 using enterpriseP2.Data;
 using Microsoft.EntityFrameworkCore;
+using enterpriseP2.Controllers;
+using enterpriseP2.Models;
 
 namespace enterpriseP2
 {
@@ -13,6 +15,10 @@ namespace enterpriseP2
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+                        builder.Services.AddEndpointsApiExplorer();
+
+                        builder.Services.AddSwaggerGen();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -22,6 +28,12 @@ namespace enterpriseP2
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+                        if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -33,6 +45,8 @@ namespace enterpriseP2
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                        app.MapFarmerModelEndpoints();
 
             app.Run();
         }
