@@ -8,7 +8,7 @@ namespace enterpriseP2.Data
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<ProductModel> Product { get; set; }
+        public DbSet<ProductModel> Products { get; set; }
         public DbSet<FarmerModel> Farmer { get; set; }
     }
     
