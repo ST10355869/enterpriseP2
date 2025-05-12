@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using enterpriseP2.Data;
+﻿using enterpriseP2.Data;
 using enterpriseP2.Models;
 using enterpriseP2.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace enterpriseP2.Controllers
 {
@@ -15,17 +10,29 @@ namespace enterpriseP2.Controllers
     {
         private readonly AppDbContext _context;
         private readonly ProductServices _productService;
+        private readonly AuthenticationService _authService;
 
-        public ProductModelsController(AppDbContext context, ProductServices addProductService)
+        public ProductModelsController(
+            AppDbContext context,
+            ProductServices productService,
+            AuthenticationService authService)
         {
             _context = context;
-            _productService = addProductService;
+            _productService = productService;
+            _authService = authService;
         }
 
         // GET: ProductModels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            var farmerId = _authService.GetCurrentFarmerId();
+            if (farmerId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var products = await _productService.GetProductsByFarmer(farmerId.Value);
+            return View(products);
         }
 
         // GET: ProductModels/Details/5
@@ -52,16 +59,20 @@ namespace enterpriseP2.Controllers
             return View();
         }
 
-        
         [HttpPost]
-  
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductModel productModel)
         {
+            var farmerId = _authService.GetCurrentFarmerId();
+            if (farmerId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (ModelState.IsValid)
             {
-               await _productService.AddProduct(productModel);
+                await _productService.AddProduct(productModel, farmerId.Value);
                 TempData["SuccessMessage"] = "Product Added!";
-
                 return RedirectToAction(nameof(Index));
             }
             return View(productModel);
