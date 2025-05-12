@@ -16,8 +16,14 @@ namespace enterpriseP2
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-                        builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddScoped<ProductServices>();
             builder.Services.AddScoped<AuthenticationService>();
             builder.Services.AddSwaggerGen();
@@ -37,7 +43,7 @@ namespace enterpriseP2
     app.UseSwagger();
     app.UseSwaggerUI();
 };
-
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
