@@ -15,5 +15,8 @@ namespace enterpriseP2.Models
         
         //grab current date when product is added
         public DateOnly DateAdded { get; set; }
+
+        public int FarmerId { get; set; }
+
     }
 }

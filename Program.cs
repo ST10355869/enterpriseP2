@@ -19,7 +19,9 @@ namespace enterpriseP2
 
                         builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddScoped<ProductServices>();
+            builder.Services.AddScoped<AuthenticationService>();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,7 +49,7 @@ namespace enterpriseP2
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                        app.MapFarmerModelEndpoints();
+                       
 
             app.Run();
         }
