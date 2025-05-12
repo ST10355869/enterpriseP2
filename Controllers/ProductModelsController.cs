@@ -14,9 +14,9 @@ namespace enterpriseP2.Controllers
     public class ProductModelsController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly AddProductService _productService;
+        private readonly ProductServices _productService;
 
-        public ProductModelsController(AppDbContext context, AddProductService addProductService)
+        public ProductModelsController(AppDbContext context, ProductServices addProductService)
         {
             _context = context;
             _productService = addProductService;
@@ -52,12 +52,9 @@ namespace enterpriseP2.Controllers
             return View();
         }
 
-        // POST: ProductModels/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
+  
         public async Task<IActionResult> Create(ProductModel productModel)
         {
             if (ModelState.IsValid)
