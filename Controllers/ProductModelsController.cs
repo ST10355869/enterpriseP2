@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using enterpriseP2.Data;
 using enterpriseP2.Models;
+using enterpriseP2.Services;
 
 namespace enterpriseP2.Controllers
 {
     public class ProductModelsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly AddProductService _productService;
 
-        public ProductModelsController(AppDbContext context)
+        public ProductModelsController(AppDbContext context, AddProductService addProductService)
         {
             _context = context;
+            _productService = addProductService;
         }
 
         // GET: ProductModels
@@ -52,16 +55,16 @@ namespace enterpriseP2.Controllers
         // POST: ProductModels/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Category,Price")] ProductModel productModel)
+        public async Task<IActionResult> Create(ProductModel productModel)
         {
             if (ModelState.IsValid)
             {
-                DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-               
-                _context.Add(productModel);
-                await _context.SaveChangesAsync();
+               await _productService.AddProduct(productModel);
+                TempData["SuccessMessage"] = "Product Added!";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(productModel);
