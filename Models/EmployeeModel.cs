@@ -16,5 +16,6 @@ namespace enterpriseP2.Models
         public string Password { get; set; }
 
         public string Role { get; set; } = "Employee";
+        public int FarmerId { get; set; } 
     }
 }
