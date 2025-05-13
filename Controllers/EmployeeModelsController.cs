@@ -19,32 +19,21 @@ namespace enterpriseP2.Controllers
             _context = context;
         }
 
-        // GET: EmployeeModels
+        //list of farmers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
         }
 
         // GET: EmployeeModels/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public IActionResult FarmerList()
+        //{
+        //    return View();
 
-            var employeeModel = await _context.Employees
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employeeModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(employeeModel);
-        }
+        //}
 
         // GET: EmployeeModels/Create
-        public IActionResult Create()
+        public IActionResult CreateFarmer()
         {
             return View();
         }
@@ -54,7 +43,7 @@ namespace enterpriseP2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Username,Password,Role")] EmployeeModel employeeModel)
+        public async Task<IActionResult> CreateFarmer([Bind("Id,FirstName,LastName,Username,Password,Role")] EmployeeModel employeeModel)
         {
             if (ModelState.IsValid)
             {

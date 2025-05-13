@@ -1,5 +1,6 @@
 ﻿using enterpriseP2.Data;
 using enterpriseP2.Models;
+using enterpriseP2.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace enterpriseP2.Services
@@ -14,11 +15,13 @@ namespace enterpriseP2.Services
             _context = context;
             _authService = authService;
         }
-        public async Task<List<ProductModel>> GetProductsByFarmer(int farmerId)
+
+        public async Task<List<ProductModel>> ListFarmers(int farmerId)
         {
             return await _context.Products
-                .Where(p => p.FarmerId == farmerId)
-                .ToListAsync();
+                  .Where(p => p.FarmerId == farmerId)
+                  .ToListAsync();
         }
+
     }
 }
