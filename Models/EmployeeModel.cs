@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace enterpriseP2.Models
 {
-    public class FarmerModel
+    public class EmployeeModel
     {
         public int Id { get; set; }
 
@@ -14,7 +15,6 @@ namespace enterpriseP2.Models
         [Required]
         public string Password { get; set; }
 
-        public string Role { get; set; } = "Farmer";
+        public string Role { get; set; } = "Employee";
     }
-
 }
