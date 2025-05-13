@@ -20,10 +20,10 @@ namespace enterpriseP2.Controllers
         }
 
         //list of farmers
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Employees.ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Employees.ToListAsync());
+        //}
 
         // GET: EmployeeModels/Details/5
         //public IActionResult FarmerList()
