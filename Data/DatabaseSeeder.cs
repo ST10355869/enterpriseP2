@@ -12,7 +12,7 @@ namespace enterpriseP2.Data
             // Check if data already exists
             if (context.Employees.Any() || context.Farmers.Any() || context.Products.Any())
             {
-                return; // Database has been seeded already
+                return; 
             }
 
             // Seed 1 Employee
@@ -21,7 +21,7 @@ namespace enterpriseP2.Data
                 FirstName = "Admin",
                 LastName = "User",
                 Username = "admin",
-                Password = "admin123", // Note: In production, hash passwords!
+                Password = "admin123", 
                 Role = "Employee"
             };
             context.Employees.Add(employee);
@@ -54,16 +54,16 @@ namespace enterpriseP2.Data
             }
             context.SaveChanges();
 
-            // Get the farmer IDs after they've been saved
+            
             var farmerIds = context.Farmers.Select(f => f.Id).ToList();
 
-            // Current year for date reference
+         
             int currentYear = DateTime.Now.Year;
 
-            // Seed 3 products for each farmer with dates in different months
+           
             foreach (var farmerId in farmerIds)
             {
-                // Farmer 1 products (March, June, September)
+                
                 if (farmerId == farmerIds[0])
                 {
                     context.Products.Add(new ProductModel
@@ -93,7 +93,7 @@ namespace enterpriseP2.Data
                         FarmerId = farmerId
                     });
                 }
-                // Farmer 2 products (April, July, October)
+               
                 else if (farmerId == farmerIds[1])
                 {
                     context.Products.Add(new ProductModel
