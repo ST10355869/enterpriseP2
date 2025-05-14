@@ -17,7 +17,7 @@ public class FarmerController : Controller
     public IActionResult Index()
     {
         var farmers = _context.Farmers.ToList();
-        return View(farmers);
+        return View("~/Views/Farmer/Index.cshtml", farmers);
     }
     // Employees can create new farmers
     [HttpGet]
@@ -41,14 +41,18 @@ public class FarmerController : Controller
 
     // Employees can view any farmer's products
     public IActionResult Products(int farmerId)
+{
+    var farmer = _context.Farmers.FirstOrDefault(f => f.Id == farmerId);
+    if (farmer == null)
     {
-        var products = _context.Products
-            .Where(p => p.FarmerId == farmerId)
-            .ToList();
-
-        ViewBag.FarmerName = _context.Farmers
-            .FirstOrDefault(f => f.Id == farmerId)?.FirstName;
-
-        return View(products);
+        return NotFound();
     }
+
+    var products = _context.Products
+        .Where(p => p.FarmerId == farmerId)
+        .ToList();
+
+    ViewBag.FarmerName = $"{farmer.FirstName} {farmer.LastName}";
+    return View(products);
+}
 }

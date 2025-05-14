@@ -59,25 +59,7 @@ namespace enterpriseP2.Controllers
             }
             return View(farmer);
         }
-        public async Task<IActionResult> Products(int id)
-        {
-            try
-            {
-                var products = await _productServices.GetProductsByFarmer(id);
-
-                // Get farmer info to display in view
-                var farmer = await _context.Employees.FindAsync(id);
-                ViewData["FarmerName"] = $"{farmer.FirstName} {farmer.LastName}";
-
-                return View(products);
-            }
-            catch (Exception ex)
-            {
-                // Log error
-                Console.WriteLine($"Error fetching products: {ex.Message}");
-                return RedirectToAction("Index");
-            }
-        }
+       
         // GET: EmployeeModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
