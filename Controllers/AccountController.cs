@@ -1,13 +1,14 @@
 ﻿using enterpriseP2.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace enterpriseP2.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AuthenticationService _authService;
+        private readonly AuthenticateService _authService;
 
-        public AccountController(AuthenticationService authService)
+        public AccountController(AuthenticateService authService)
         {
             _authService = authService;
         }
@@ -23,16 +24,17 @@ namespace enterpriseP2.Controllers
         {
             if (await _authService.Login(username, password))
             {
+                // Let the auth cookie fully process before redirect
+                await Task.Delay(100); // Small delay
                 return RedirectToAction("Index", "ProductModels");
             }
-
             ViewBag.Error = "Invalid username or password";
             return View();
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            _authService.Logout();
+            await HttpContext.SignOutAsync();
             return RedirectToAction("Login");
         }
     }

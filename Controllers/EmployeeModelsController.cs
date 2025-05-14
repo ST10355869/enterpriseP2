@@ -7,30 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using enterpriseP2.Data;
 using enterpriseP2.Models;
+using enterpriseP2.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace enterpriseP2.Controllers
 {
+    [Authorize(Policy = "EmployeeOnly")]
     public class EmployeeModelsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly AuthenticateService _authService;
+        private readonly ProductServices _productServices;
 
-        public EmployeeModelsController(AppDbContext context)
+        public EmployeeModelsController(AppDbContext context, AuthenticateService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
-        //list of farmers
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Employees.ToListAsync());
-        //}
-
-        // GET: EmployeeModels/Details/5
-        //public IActionResult FarmerList()
-        //{
-        //    return View();
-
-        //}
+        public IActionResult Index()
+        {
+            if (!_authService.IsEmployee()) return RedirectToAction("Login", "Account");
+            return View("EmployeeDashboard");
+        }
 
         // GET: EmployeeModels/Create
         public IActionResult CreateFarmer()
@@ -53,7 +52,25 @@ namespace enterpriseP2.Controllers
             }
             return View(employeeModel);
         }
+        public async Task<IActionResult> Products(int id)
+        {
+            try
+            {
+                var products = await _productServices.GetProductsByFarmer(id);
 
+                // Get farmer info to display in view
+                var farmer = await _context.Employees.FindAsync(id);
+                ViewData["FarmerName"] = $"{farmer.FirstName} {farmer.LastName}";
+
+                return View(products);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                Console.WriteLine($"Error fetching products: {ex.Message}");
+                return RedirectToAction("Index");
+            }
+        }
         // GET: EmployeeModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

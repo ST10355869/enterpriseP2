@@ -7,9 +7,9 @@ namespace enterpriseP2.Services
     public class ProductServices
     {
         private readonly AppDbContext _context;
-        private readonly AuthenticationService _authService;
+        private readonly AuthenticateService _authService;
 
-        public ProductServices(AppDbContext context, AuthenticationService authService)
+        public ProductServices(AppDbContext context,    AuthenticateService authService)
         {
             _context = context;
             _authService = authService;
@@ -26,11 +26,19 @@ namespace enterpriseP2.Services
 
         public async Task<List<ProductModel>> GetProductsByFarmer(int farmerId)
         {
-            return await _context.Products
-                .Where(p => p.FarmerId == farmerId)
-                .ToListAsync();
+            try
+            {
+                return await _context.Products
+           .Where(p => p.FarmerId == farmerId)
+           .ToListAsync();
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
-
         public async Task ShowProducts()
         {
             var products = await _context.Products.ToListAsync();
@@ -39,5 +47,7 @@ namespace enterpriseP2.Services
                 Console.WriteLine($"Product Name: {product.Name}, Category: {product.Category}, Price: {product.Price}, Date Added: {product.DateAdded}");
             }
         }
+
+
     }
 }

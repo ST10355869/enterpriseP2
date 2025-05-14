@@ -8,9 +8,9 @@ namespace enterpriseP2.Services
     public class EmployeeServices
     {
         private readonly AppDbContext _context;
-        private readonly AuthenticationService _authService;
+        private readonly AuthenticateService _authService;
 
-        public EmployeeServices(AppDbContext context, AuthenticationService authService)
+        public EmployeeServices(AppDbContext context, AuthenticateService authService)
         {
             _context = context;
             _authService = authService;
