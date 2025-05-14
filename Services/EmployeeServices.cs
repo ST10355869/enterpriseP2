@@ -15,13 +15,43 @@ namespace enterpriseP2.Services
             _context = context;
             _authService = authService;
         }
+        public async Task<bool> CreateFarmer(FarmerModel farmer)
+        {
+            try
+            {
+                // Basic validation
+                if (string.IsNullOrEmpty(farmer.Username))
+                    return false;
 
+                // Check if username already exists
+                if (await _context.Farmers.AnyAsync(f => f.Username == farmer.Username))
+                    return false;
+
+                farmer.Role = "Farmer"; // Ensure role is set
+                _context.Farmers.Add(farmer);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public async Task<List<ProductModel>> ListFarmers(int farmerId)
         {
             return await _context.Products
                   .Where(p => p.FarmerId == farmerId)
                   .ToListAsync();
         }
-
+        public async Task<List<ProductModel>> GetFarmerProducts(int farmerId)
+        {
+            return await _context.Products
+                .Where(p => p.FarmerId == farmerId)
+                .ToListAsync();
+        }
+        public async Task<List<FarmerModel>> GetAllFarmers()
+        {
+            return await _context.Farmers.ToListAsync();
+        }
     }
 }

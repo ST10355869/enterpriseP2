@@ -18,11 +18,13 @@ namespace enterpriseP2.Controllers
         private readonly AppDbContext _context;
         private readonly AuthenticateService _authService;
         private readonly ProductServices _productServices;
+        private readonly EmployeeServices _employeeService;
 
-        public EmployeeModelsController(AppDbContext context, AuthenticateService authService)
+        public EmployeeModelsController(AppDbContext context, AuthenticateService authService,EmployeeServices employeeService)
         {
             _context = context;
             _authService = authService;
+            _employeeService = employeeService;
         }
 
         public IActionResult Index()
@@ -32,9 +34,10 @@ namespace enterpriseP2.Controllers
         }
 
         // GET: EmployeeModels/Create
+        [HttpGet]
         public IActionResult CreateFarmer()
         {
-            return View();
+            return View(new FarmerModel());
         }
 
         // POST: EmployeeModels/Create
@@ -42,15 +45,19 @@ namespace enterpriseP2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateFarmer([Bind("Id,FirstName,LastName,Username,Password,Role")] EmployeeModel employeeModel)
+        public async Task<IActionResult> CreateFarmer(FarmerModel farmer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employeeModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var result = await _employeeService.CreateFarmer(farmer);
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Farmer created successfully!";
+                    return RedirectToAction("Index", "Farmer");
+                }
+                ModelState.AddModelError("", "Username already exists or invalid data");
             }
-            return View(employeeModel);
+            return View(farmer);
         }
         public async Task<IActionResult> Products(int id)
         {
