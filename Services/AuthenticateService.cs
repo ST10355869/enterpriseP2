@@ -75,7 +75,6 @@ namespace enterpriseP2.Services
 
         public int? GetCurrentUserId()
         {
-            // Parse and return user ID if exists
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId");
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
             {
