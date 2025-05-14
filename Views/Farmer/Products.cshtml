@@ -5,6 +5,39 @@
 
 <h2>@ViewBag.FarmerName's Products</h2>
 
+<!-- Filter and Sort Form -->
+<form asp-action="Products" method="get">
+    <input type="hidden" name="farmerId" value="@Context.Request.Query["farmerId"]" />
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label for="categoryFilter" class="form-label">Filter by Category:</label>
+            <select name="categoryFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                <option value="vegetable" selected="@("vegetable".Equals(ViewBag.CurrentFilter, StringComparison.OrdinalIgnoreCase))">Vegetable</option>
+                <option value="fruit" selected="@("fruit".Equals(ViewBag.CurrentFilter, StringComparison.OrdinalIgnoreCase))">Fruit</option>
+                <option value="grain" selected="@("grain".Equals(ViewBag.CurrentFilter, StringComparison.OrdinalIgnoreCase))">Grain</option>
+                <option value="protein" selected="@("protein".Equals(ViewBag.CurrentFilter, StringComparison.OrdinalIgnoreCase))">Protein</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="dateSortOrder" class="form-label">Sort by Date:</label>
+            <select name="dateSortOrder" class="form-select" onchange="this.form.submit()">
+                <option value="newest" selected="@("newest".Equals(ViewBag.DateSortOrder, StringComparison.OrdinalIgnoreCase))">Newest First</option>
+                <option value="oldest" selected="@("oldest".Equals(ViewBag.DateSortOrder, StringComparison.OrdinalIgnoreCase))">Oldest First</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end">
+            <a href="@Url.Action("Products", new { farmerId = Context.Request.Query["farmerId"] })"
+               class="btn btn-outline-secondary">
+                Reset Filters
+            </a>
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -27,4 +60,4 @@
     </tbody>
 </table>
 
-<a asp-action="Index">Back to Farmers List</a>
+<a asp-action="Index" class="btn btn-primary">Back to Farmers List</a>

@@ -1,44 +1,46 @@
-﻿@model IEnumerable<enterpriseP2.Models.ProductModel>
-
+﻿@model List<ProductModel>
 @{
-    ViewData["Title"] = "Products for " + ViewData["FarmerName"];
+    ViewData["Title"] = $"{ViewBag.FarmerName}'s Products";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@ViewBag.FarmerName's Products</h2>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">@TempData["Message"]</div>
-}
+<!-- Add filter form -->
+<form asp-action="Products" method="get">
+    <input type="hidden" name="farmerId" value="@Context.Request.Query["farmerId"]" />
 
-<table class="table table-striped">
-    <thead class="thead-dark">
+    <div class="form-group">
+        <label for="categoryFilter">Filter by Category:</label>
+        <select name="categoryFilter" class="form-control" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category" selected="@(category == ViewBag.CurrentFilter)">@category</option>
+            }
+        </select>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
         <tr>
-            <th>Product Name</th>
+            <th>Name</th>
             <th>Category</th>
             <th>Price</th>
             <th>Date Added</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var product in Model)
         {
             <tr>
-                <td>@item.Name</td>
-                <td>@item.Category</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>@item.DateAdded.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-controller="EmployeeModels" asp-action="Products" asp-route-id="@item.Id" class="btn btn-info">View Products</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
+                <td>@product.Name</td>
+                <td>@product.Category</td>
+                <td>@product.Price.ToString("C")</td>
+                <td>@product.DateAdded.ToShortDateString()</td>
             </tr>
         }
     </tbody>
 </table>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Back to Farmers List</a>
-</div>
+<a asp-action="Index">Back to Farmers List</a>

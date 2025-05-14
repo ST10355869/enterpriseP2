@@ -40,19 +40,44 @@ public class FarmerController : Controller
     }
 
     // Employees can view any farmer's products
-    public IActionResult Products(int farmerId)
-{
-    var farmer = _context.Farmers.FirstOrDefault(f => f.Id == farmerId);
-    if (farmer == null)
+    public IActionResult Products(int farmerId, string categoryFilter = "", string dateSortOrder = "")
     {
-        return NotFound();
+        var farmer = _context.Farmers.FirstOrDefault(f => f.Id == farmerId);
+        if (farmer == null)
+        {
+            return NotFound();
+        }
+
+        IQueryable<ProductModel> query = _context.Products
+            .Where(p => p.FarmerId == farmerId);
+
+        // Apply category filter if specified
+        if (!string.IsNullOrEmpty(categoryFilter))
+        {
+            query = query.Where(p => p.Category.ToLower() == categoryFilter.ToLower());
+        }
+
+        // Apply date sorting
+        switch (dateSortOrder?.ToLower())
+        {
+            case "newest":
+                query = query.OrderByDescending(p => p.DateAdded);
+                break;
+            case "oldest":
+                query = query.OrderBy(p => p.DateAdded);
+                break;
+            default:
+                // Default sorting (you can change this)
+                query = query.OrderByDescending(p => p.DateAdded);
+                break;
+        }
+
+        var products = query.ToList();
+
+        ViewBag.FarmerName = $"{farmer.FirstName} {farmer.LastName}";
+        ViewBag.CurrentFilter = categoryFilter;
+        ViewBag.DateSortOrder = dateSortOrder;
+
+        return View(products);
     }
-
-    var products = _context.Products
-        .Where(p => p.FarmerId == farmerId)
-        .ToList();
-
-    ViewBag.FarmerName = $"{farmer.FirstName} {farmer.LastName}";
-    return View(products);
-}
 }
