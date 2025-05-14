@@ -13,13 +13,13 @@ public class FarmerController : Controller
         _context = context;
     }
 
-    // Employees can view all farmers
+   
     public IActionResult Index()
     {
         var farmers = _context.Farmers.ToList();
         return View("~/Views/Farmer/Index.cshtml", farmers);
     }
-    // Employees can create new farmers
+   
     [HttpGet]
     public IActionResult Create()
     {
@@ -39,10 +39,11 @@ public class FarmerController : Controller
         return View(farmer);
     }
 
-    // Employees can view any farmer's products
+    
     public IActionResult Products(int farmerId, string categoryFilter = "",
-                             int? year = null, int? month = null)
+                            int? year = null, int? month = null)
     {
+        // Check if farmer exists
         var farmer = _context.Farmers.FirstOrDefault(f => f.Id == farmerId);
         if (farmer == null)
         {
@@ -52,22 +53,29 @@ public class FarmerController : Controller
         IQueryable<ProductModel> query = _context.Products
             .Where(p => p.FarmerId == farmerId);
 
-        // Apply category filter if specified
+       
         if (!string.IsNullOrEmpty(categoryFilter))
         {
             query = query.Where(p => p.Category.ToLower() == categoryFilter.ToLower());
         }
 
-        // Apply date range filter if specified
-        if (year.HasValue && month.HasValue)
+        
+        if (year.HasValue)
         {
-            var startDate = new DateOnly(year.Value, month.Value, 1);
-            var endDate = startDate.AddMonths(1).AddDays(-1);
-
-            query = query.Where(p => p.DateAdded >= startDate && p.DateAdded <= endDate);
+            if (month.HasValue)
+            {
+               
+                query = query.Where(p => p.DateAdded.Year == year.Value &&
+                                       p.DateAdded.Month == month.Value);
+            }
+            else
+            {
+              
+                query = query.Where(p => p.DateAdded.Year == year.Value);
+            }
         }
 
-        // Default sorting by date (newest first)
+       
         query = query.OrderByDescending(p => p.DateAdded);
 
         var products = query.ToList();
@@ -77,7 +85,7 @@ public class FarmerController : Controller
         ViewBag.SelectedYear = year;
         ViewBag.SelectedMonth = month;
 
-        // Get distinct years with products for dropdown
+      
         ViewBag.AvailableYears = _context.Products
             .Where(p => p.FarmerId == farmerId)
             .Select(p => p.DateAdded.Year)

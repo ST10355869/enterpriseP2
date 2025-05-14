@@ -19,18 +19,19 @@ namespace enterpriseP2.Controllers
             return View();
         }
 
-        [HttpPost]
+       
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
+            // Check if login credentials are valid
             if (await _authService.Login(username, password))
             {
-                // Check role and redirect appropriately
+                // Redirect based on user role
                 if (User.IsInRole("Employee"))
                 {
                     return RedirectToAction("Index", "Farmer"); 
                 }
-                return RedirectToAction("Index", "ProductModels"); // Farmers go to products
+                return RedirectToAction("Index", "ProductModels"); 
             }
             ViewBag.Error = "Invalid username or password";
             return View();

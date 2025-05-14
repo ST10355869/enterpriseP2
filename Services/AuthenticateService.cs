@@ -26,12 +26,12 @@ namespace enterpriseP2.Services
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(e => e.Username == username && e.Password == password);
-
+            // Check if user exists as farmer or employee
             if (farmer == null && employee == null)
                 return false;
 
             var claims = new List<Claim>();
-
+            // Add claims based on user type
             if (farmer != null)
             {
                 claims.Add(new Claim(ClaimTypes.Name, farmer.Username));
@@ -75,6 +75,7 @@ namespace enterpriseP2.Services
 
         public int? GetCurrentUserId()
         {
+            // Parse and return user ID if exists
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId");
             if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
             {

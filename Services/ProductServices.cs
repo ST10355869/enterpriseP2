@@ -17,9 +17,11 @@ namespace enterpriseP2.Services
 
         public async Task AddProduct(ProductModel product, int farmerId)
         {
+            //Automatically set the date when the product is added
             product.DateAdded = DateOnly.FromDateTime(DateTime.Now);
+            //assigns product to the farmer
             product.FarmerId = farmerId;
-
+            
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }

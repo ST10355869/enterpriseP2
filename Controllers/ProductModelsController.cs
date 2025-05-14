@@ -36,7 +36,7 @@ public class ProductModelsController : Controller
 
     public IActionResult Create()
     {
-        return View(); // No need for check - handled by Authorize attribute
+        return View(); 
     }
 
 
@@ -45,6 +45,7 @@ public class ProductModelsController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Check if farmer ID exists
             var farmerId = User.FindFirstValue("UserId");
             if (!string.IsNullOrEmpty(farmerId))
             {

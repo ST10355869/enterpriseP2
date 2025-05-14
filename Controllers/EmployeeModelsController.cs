@@ -43,7 +43,7 @@ namespace enterpriseP2.Controllers
         public async Task<IActionResult> CreateFarmer(FarmerModel farmer)
         {
             if (ModelState.IsValid)
-            {
+            {   // Attempt to create farmer
                 var result = await _employeeService.CreateFarmer(farmer);
                 if (result)
                 {

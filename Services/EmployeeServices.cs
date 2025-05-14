@@ -19,7 +19,7 @@ namespace enterpriseP2.Services
         {
             try
             {
-                // Basic validation
+                // Validate username
                 if (string.IsNullOrEmpty(farmer.Username))
                     return false;
 
