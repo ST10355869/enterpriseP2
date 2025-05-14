@@ -36,13 +36,13 @@ namespace enterpriseP2.Services
             {
                 claims.Add(new Claim(ClaimTypes.Name, farmer.Username));
                 claims.Add(new Claim("UserId", farmer.Id.ToString()));
-                claims.Add(new Claim(ClaimTypes.Role, "Farmer")); // ✅ correct role claim
+                claims.Add(new Claim(ClaimTypes.Role, "Farmer")); 
             }
             else if (employee != null)
             {
                 claims.Add(new Claim(ClaimTypes.Name, employee.Username));
                 claims.Add(new Claim("UserId", employee.Id.ToString()));
-                claims.Add(new Claim(ClaimTypes.Role, "Employee")); // ✅ correct role claim
+                claims.Add(new Claim(ClaimTypes.Role, "Employee")); 
             }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

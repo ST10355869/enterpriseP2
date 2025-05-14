@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-[Authorize(Roles = "Farmer")]
+[Authorize(Roles = "Farmer,Employee")]
 public class ProductModelsController : Controller
 {
     private readonly AppDbContext _context;

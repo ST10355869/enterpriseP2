@@ -35,16 +35,19 @@ namespace enterpriseP2
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-     .AddCookie(options =>
-     {
-         options.LoginPath = "/Account/Login";
-         options.Cookie.SameSite = SameSiteMode.Lax;
-         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-     });
+       .AddCookie(options =>
+       {
+           options.LoginPath = "/Account/Login";
+           options.AccessDeniedPath = "/Account/AccessDenied";
+           options.Cookie.SameSite = SameSiteMode.Lax;
+           options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+       });
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("FarmerOnly", policy =>
                     policy.RequireRole("Farmer"));
+                options.AddPolicy("EmployeeOnly", policy =>
+                    policy.RequireRole("Employee"));
             });
 
             var app = builder.Build();

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace enterpriseP2.Controllers
 {
-    [Authorize(Policy = "EmployeeOnly")]
+    [Authorize(Roles = "Employee")]
     public class EmployeeModelsController : Controller
     {
         private readonly AppDbContext _context;

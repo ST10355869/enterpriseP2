@@ -3,7 +3,7 @@ using enterpriseP2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize(Roles = "Farmer")]
+[Authorize(Roles = "Employee")]
 public class FarmerController : Controller
 {
     private readonly AppDbContext _context;
@@ -16,12 +16,8 @@ public class FarmerController : Controller
     // Employees can view all farmers
     public IActionResult Index()
     {
-        if (User.IsInRole("Farmer"))
-        {
-            var farmers = _context.Farmers.ToList();
-            return View(farmers);
-        }
-        return RedirectToAction("Login", "Account");
+        var farmers = _context.Farmers.ToList();
+        return View(farmers);
     }
     // Employees can create new farmers
     [HttpGet]

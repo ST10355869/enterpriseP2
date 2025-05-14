@@ -20,18 +20,26 @@ namespace enterpriseP2.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
             if (await _authService.Login(username, password))
             {
-                // Let the auth cookie fully process before redirect
-                await Task.Delay(100); // Small delay
-                return RedirectToAction("Index", "ProductModels");
+                // Check role and redirect appropriately
+                if (User.IsInRole("Employee"))
+                {
+                    return RedirectToAction("Index", "Farmer"); // Redirect employees to farmer list
+                }
+                return RedirectToAction("Index", "ProductModels"); // Farmers go to products
             }
             ViewBag.Error = "Invalid username or password";
             return View();
         }
-
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();

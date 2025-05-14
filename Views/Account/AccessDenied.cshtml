@@ -1,3 +1,15 @@
-﻿<h1>Access Denied</h1>
-<p>You must be an employee to view this page.</p>
-<a asp-action="Login">Login as Employee</a>
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<h1 class="text-danger">Access Denied</h1>
+<p class="text-warning">You don't have permission to access this resource.</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>You are logged in as: @User.Identity.Name</p>
+    <p>Your roles: @string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))</p>
+}
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Return to Home</a>
