@@ -27,7 +27,7 @@ namespace enterpriseP2.Data
             context.Employees.Add(employee);
             context.SaveChanges();
 
-            // Seed 3 Farmers
+            // Seed 2 Farmers
             var farmers = new FarmerModel[]
             {
                 new FarmerModel
@@ -45,14 +45,6 @@ namespace enterpriseP2.Data
                     Username = "farmer2",
                     Password = "farmer456",
                     Role = "Farmer"
-                },
-                new FarmerModel
-                {
-                    FirstName = "Robert",
-                    LastName = "Johnson",
-                    Username = "farmer3",
-                    Password = "farmer789",
-                    Role = "Farmer"
                 }
             };
 
@@ -65,49 +57,51 @@ namespace enterpriseP2.Data
             // Get the farmer IDs after they've been saved
             var farmerIds = context.Farmers.Select(f => f.Id).ToList();
 
-            // Seed products for each farmer (3 products per farmer)
-            var random = new Random();
-            string[] categories = { "protein", "grain", "fruit", "vegetable" };
+            // Current year for date reference
+            int currentYear = DateTime.Now.Year;
 
+            // Seed 3 products for each farmer with dates in different months
             foreach (var farmerId in farmerIds)
             {
-                // Farmer 1 products
-                context.Products.Add(new ProductModel
+                // Farmer 1 products (March, June, September)
+                if (farmerId == farmerIds[0])
                 {
-                    Name = "Grass-fed Beef",
-                    Category = "protein",
-                    Price = 12.99,
-                    DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-10)),
-                    FarmerId = farmerId
-                });
+                    context.Products.Add(new ProductModel
+                    {
+                        Name = "Grass-fed Beef",
+                        Category = "protein",
+                        Price = 12.99,
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 3, 15)),
+                        FarmerId = farmerId
+                    });
 
-                context.Products.Add(new ProductModel
-                {
-                    Name = "Organic Quinoa",
-                    Category = "grain",
-                    Price = 5.99,
-                    DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-5)),
-                    FarmerId = farmerId
-                });
+                    context.Products.Add(new ProductModel
+                    {
+                        Name = "Organic Quinoa",
+                        Category = "grain",
+                        Price = 5.99,
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 6, 20)),
+                        FarmerId = farmerId
+                    });
 
-                context.Products.Add(new ProductModel
-                {
-                    Name = "Fresh Apples",
-                    Category = "fruit",
-                    Price = 3.49,
-                    DateAdded = DateOnly.FromDateTime(DateTime.Now),
-                    FarmerId = farmerId
-                });
-
-                // For variety, you could make the products different for each farmer
-                if (farmerId == farmerIds[1]) // Second farmer
+                    context.Products.Add(new ProductModel
+                    {
+                        Name = "Fresh Apples",
+                        Category = "fruit",
+                        Price = 3.49,
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 9, 10)),
+                        FarmerId = farmerId
+                    });
+                }
+                // Farmer 2 products (April, July, October)
+                else if (farmerId == farmerIds[1])
                 {
                     context.Products.Add(new ProductModel
                     {
                         Name = "Free-range Eggs",
                         Category = "protein",
                         Price = 4.99,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-8)),
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 4, 5)),
                         FarmerId = farmerId
                     });
 
@@ -116,7 +110,7 @@ namespace enterpriseP2.Data
                         Name = "Whole Wheat Flour",
                         Category = "grain",
                         Price = 3.29,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-3)),
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 7, 15)),
                         FarmerId = farmerId
                     });
 
@@ -125,36 +119,7 @@ namespace enterpriseP2.Data
                         Name = "Organic Carrots",
                         Category = "vegetable",
                         Price = 2.99,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now),
-                        FarmerId = farmerId
-                    });
-                }
-                else if (farmerId == farmerIds[2]) // Third farmer
-                {
-                    context.Products.Add(new ProductModel
-                    {
-                        Name = "Organic Chicken",
-                        Category = "protein",
-                        Price = 8.99,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-7)),
-                        FarmerId = farmerId
-                    });
-
-                    context.Products.Add(new ProductModel
-                    {
-                        Name = "Brown Rice",
-                        Category = "grain",
-                        Price = 4.49,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now.AddDays(-2)),
-                        FarmerId = farmerId
-                    });
-
-                    context.Products.Add(new ProductModel
-                    {
-                        Name = "Fresh Strawberries",
-                        Category = "fruit",
-                        Price = 5.99,
-                        DateAdded = DateOnly.FromDateTime(DateTime.Now),
+                        DateAdded = DateOnly.FromDateTime(new DateTime(currentYear, 10, 20)),
                         FarmerId = farmerId
                     });
                 }
