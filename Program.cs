@@ -35,14 +35,29 @@ namespace enterpriseP2
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-       .AddCookie(options =>
-       {
-           options.LoginPath = "/Account/Login";
-           options.AccessDeniedPath = "/Account/AccessDenied";
-           options.Cookie.SameSite = SameSiteMode.Lax;
-           options.Cookie.HttpOnly = true;
-           options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-       });
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnSigningIn = async context =>
+            {
+                await Task.CompletedTask;
+            },
+            OnSignedIn = async context =>
+            {
+                await Task.CompletedTask;
+            },
+            OnValidatePrincipal = async context =>
+            {
+                await Task.CompletedTask;
+            }
+        };
+    });
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("FarmerOnly", policy =>

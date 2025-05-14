@@ -42,7 +42,8 @@ namespace enterpriseP2.Services
             {
                 claims.Add(new Claim(ClaimTypes.Name, employee.Username));
                 claims.Add(new Claim("UserId", employee.Id.ToString()));
-                claims.Add(new Claim(ClaimTypes.Role, "Employee")); 
+                claims.Add(new Claim(ClaimTypes.Role, "Employee"));  // Ensure this matches
+                claims.Add(new Claim("Role", "Employee"));
             }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -59,7 +60,9 @@ namespace enterpriseP2.Services
 
         public async Task Logout()
         {
-            await _httpContextAccessor.HttpContext?.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _httpContextAccessor.HttpContext?.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
         }
 
 
@@ -84,8 +87,21 @@ namespace enterpriseP2.Services
         }
 
         public string? GetCurrentUserRole()
-{
-            return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+        {
+            // Debugging - log all claims first
+            var claims = _httpContextAccessor.HttpContext?.User?.Claims;
+            if (claims != null)
+            {
+                foreach (var claim in claims)
+                {
+                    Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
+                }
+            }
+
+            return _httpContextAccessor.HttpContext?.User?
+                .Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Role || c.Type == "Role")?
+                .Value;
         }
 
     }
