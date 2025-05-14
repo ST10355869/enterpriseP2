@@ -40,7 +40,8 @@ namespace enterpriseP2
            options.LoginPath = "/Account/Login";
            options.AccessDeniedPath = "/Account/AccessDenied";
            options.Cookie.SameSite = SameSiteMode.Lax;
-           options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+           options.Cookie.HttpOnly = true;
+           options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
        });
             builder.Services.AddAuthorization(options =>
             {

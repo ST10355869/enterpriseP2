@@ -28,7 +28,7 @@ namespace enterpriseP2.Controllers
                 // Check role and redirect appropriately
                 if (User.IsInRole("Employee"))
                 {
-                    return RedirectToAction("Index", "Farmer"); // Redirect employees to farmer list
+                    return RedirectToAction("Index", "Farmer"); 
                 }
                 return RedirectToAction("Index", "ProductModels"); // Farmers go to products
             }

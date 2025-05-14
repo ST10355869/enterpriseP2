@@ -27,12 +27,7 @@ namespace enterpriseP2.Controllers
             _employeeService = employeeService;
         }
 
-        public IActionResult Index()
-        {
-            if (!_authService.IsEmployee()) return RedirectToAction("Login", "Account");
-            return View("EmployeeDashboard");
-        }
-
+        
         // GET: EmployeeModels/Create
         [HttpGet]
         public IActionResult CreateFarmer()

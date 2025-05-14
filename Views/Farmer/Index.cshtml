@@ -7,8 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-controller="EmployeeModels" asp-action="CreateFarmer">New Farmer</a>
-
+    <a asp-controller="EmployeeModels" asp-action="CreateFarmer" class="btn btn-primary">New Farmer</a>
 </p>
 <table class="table">
     <thead>
@@ -29,27 +28,51 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Farmer" asp-action="Products" asp-route-farmerId="@item.Id">Products</a>
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+
+                <td>
+                    <a asp-controller="Farmer" asp-action="Products" asp-route-farmerId="@item.Id" class="product-link">Products</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<style>
+    /* Add this to your existing green theme CSS */
+    .product-link {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #f8f9fa; /* Off-white background */
+        color: var(--dark-green) !important; /* Dark green text */
+        text-decoration: none !important;
+        border-radius: 4px;
+        border: 1px solid #dee2e6; /* Light gray border */
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 80px;
+        font-weight: 500;
+    }
+
+        .product-link:hover {
+            background-color: #e9ecef; /* Slightly darker off-white on hover */
+            color: var(--primary-green) !important;
+            border-color: var(--secondary-green);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+</style>
