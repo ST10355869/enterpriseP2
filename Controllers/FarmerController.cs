@@ -40,7 +40,8 @@ public class FarmerController : Controller
     }
 
     // Employees can view any farmer's products
-    public IActionResult Products(int farmerId, string categoryFilter = "", string dateSortOrder = "")
+    public IActionResult Products(int farmerId, string categoryFilter = "",
+                             int? year = null, int? month = null)
     {
         var farmer = _context.Farmers.FirstOrDefault(f => f.Id == farmerId);
         if (farmer == null)
@@ -57,26 +58,32 @@ public class FarmerController : Controller
             query = query.Where(p => p.Category.ToLower() == categoryFilter.ToLower());
         }
 
-        // Apply date sorting
-        switch (dateSortOrder?.ToLower())
+        // Apply date range filter if specified
+        if (year.HasValue && month.HasValue)
         {
-            case "newest":
-                query = query.OrderByDescending(p => p.DateAdded);
-                break;
-            case "oldest":
-                query = query.OrderBy(p => p.DateAdded);
-                break;
-            default:
-                // Default sorting (you can change this)
-                query = query.OrderByDescending(p => p.DateAdded);
-                break;
+            var startDate = new DateOnly(year.Value, month.Value, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            query = query.Where(p => p.DateAdded >= startDate && p.DateAdded <= endDate);
         }
+
+        // Default sorting by date (newest first)
+        query = query.OrderByDescending(p => p.DateAdded);
 
         var products = query.ToList();
 
         ViewBag.FarmerName = $"{farmer.FirstName} {farmer.LastName}";
         ViewBag.CurrentFilter = categoryFilter;
-        ViewBag.DateSortOrder = dateSortOrder;
+        ViewBag.SelectedYear = year;
+        ViewBag.SelectedMonth = month;
+
+        // Get distinct years with products for dropdown
+        ViewBag.AvailableYears = _context.Products
+            .Where(p => p.FarmerId == farmerId)
+            .Select(p => p.DateAdded.Year)
+            .Distinct()
+            .OrderByDescending(y => y)
+            .ToList();
 
         return View(products);
     }

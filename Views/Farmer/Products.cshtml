@@ -1,6 +1,12 @@
 ﻿@model List<ProductModel>
 @{
     ViewData["Title"] = $"{ViewBag.FarmerName}'s Products";
+    var months = new Dictionary<int, string>
+    {
+        {1, "January"}, {2, "February"}, {3, "March"}, {4, "April"},
+        {5, "May"}, {6, "June"}, {7, "July"}, {8, "August"},
+        {9, "September"}, {10, "October"}, {11, "November"}, {12, "December"}
+    };
 }
 
 <h2>@ViewBag.FarmerName's Products</h2>
@@ -9,9 +15,10 @@
 <form asp-action="Products" method="get">
     <input type="hidden" name="farmerId" value="@Context.Request.Query["farmerId"]" />
 
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <label for="categoryFilter" class="form-label">Filter by Category:</label>
+    <div class="row mb-4">
+        <!-- Category Filter -->
+        <div class="col-md-4 mb-2">
+            <label class="form-label">Category:</label>
             <select name="categoryFilter" class="form-select" onchange="this.form.submit()">
                 <option value="">All Categories</option>
                 <option value="vegetable" selected="@("vegetable".Equals(ViewBag.CurrentFilter, StringComparison.OrdinalIgnoreCase))">Vegetable</option>
@@ -21,22 +28,46 @@
             </select>
         </div>
 
-        <div class="col-md-4">
-            <label for="dateSortOrder" class="form-label">Sort by Date:</label>
-            <select name="dateSortOrder" class="form-select" onchange="this.form.submit()">
-                <option value="newest" selected="@("newest".Equals(ViewBag.DateSortOrder, StringComparison.OrdinalIgnoreCase))">Newest First</option>
-                <option value="oldest" selected="@("oldest".Equals(ViewBag.DateSortOrder, StringComparison.OrdinalIgnoreCase))">Oldest First</option>
+        <!-- Year Filter -->
+        <div class="col-md-3 mb-2">
+            <label class="form-label">Year:</label>
+            <select name="year" class="form-select" onchange="this.form.submit()">
+                <option value="">All Years</option>
+                @foreach (var y in ViewBag.AvailableYears)
+                {
+                    <option value="@y" selected="@(y == ViewBag.SelectedYear)">@y</option>
+                }
             </select>
         </div>
 
-        <div class="col-md-4 d-flex align-items-end">
+        <!-- Month Filter -->
+        <div class="col-md-3 mb-2">
+            <label class="form-label">Month:</label>
+            <select name="month" class="form-select" onchange="this.form.submit()">
+                <option value="">All Months</option>
+                @foreach (var m in months)
+                {
+                    <option value="@m.Key" selected="@(m.Key == ViewBag.SelectedMonth)">@m.Value</option>
+                }
+            </select>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="col-md-2 d-flex align-items-end mb-2">
             <a href="@Url.Action("Products", new { farmerId = Context.Request.Query["farmerId"] })"
-               class="btn btn-outline-secondary">
-                Reset Filters
+               class="btn btn-outline-secondary w-100">
+                Reset
             </a>
         </div>
     </div>
 </form>
+
+@if (ViewBag.SelectedYear != null && ViewBag.SelectedMonth != null)
+{
+    <div class="alert alert-info mb-3">
+        Showing products from @months[(int)ViewBag.SelectedMonth] @ViewBag.SelectedYear
+    </div>
+}
 
 <table class="table">
     <thead>
@@ -48,13 +79,19 @@
         </tr>
     </thead>
     <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center">No products found matching your filters</td>
+            </tr>
+        }
         @foreach (var product in Model)
         {
             <tr>
                 <td>@product.Name</td>
                 <td>@product.Category</td>
                 <td>@product.Price.ToString("C")</td>
-                <td>@product.DateAdded.ToShortDateString()</td>
+                <td>@product.DateAdded.ToString("MMM dd, yyyy")</td>
             </tr>
         }
     </tbody>
